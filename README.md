@@ -73,7 +73,7 @@ Master branch of this project is automatically built & hosted in Netlify (https:
 ### Backup import
 
 1. Get backup name from https://console.cloud.google.com/storage/browser/pistejaska-dev-firestore-backups?project=pistejaska-dev
-1. `gcloud beta firestore import gs://pistejaska-dev-firestore-backups/{name}`
+1. `gcloud beta firestore import --database="backup" gs://pistejaska-dev-firestore-backups/{name}`
 
 ## Migrations
 
