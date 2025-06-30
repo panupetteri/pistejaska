@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "@js-temporal/polyfill": "^0.4.4",
+    "@js-temporal/polyfill": "^0.5.1",
     "ajv": "^6.12.6",
     "classnames": "^2.5.1",
     "firebase": "^10.14.1",

@@ -17,7 +17,7 @@ export const PlayListView = () => {
 
   const images = useMemo(() => {
     const items: ImageGalleryItem[] = [];
-    orderBy(plays, (play) => play.getDate().epochSeconds, "desc").forEach(
+    orderBy(plays, (play) => play.getDate().epochMilliseconds, "desc").forEach(
       (play) => {
         play.getImageUrls().forEach((src) => {
           items.push({

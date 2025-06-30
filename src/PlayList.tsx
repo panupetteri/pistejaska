@@ -36,7 +36,7 @@ const PlayList = (props: PlayListProps) => {
     () =>
       orderBy(
         plays,
-        [(play) => play.getDate().epochSeconds, "created"],
+        [(play) => play.getDate().epochMilliseconds, "created"],
         ["desc", "desc"],
       ),
     [plays],

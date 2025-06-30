@@ -179,7 +179,7 @@ export function PlayFormField<
             {"Set from start "}
             <small>
               {"("}
-              <DurationCounter startTime={createdAt.epochSeconds} />
+              <DurationCounter startTime={createdAt.epochMilliseconds / 1000} />
               {")"}
             </small>
           </ButtonLight>

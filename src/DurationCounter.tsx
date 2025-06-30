@@ -7,17 +7,17 @@ interface DurationCounterProps {
 
 function DurationCounter({ startTime }: DurationCounterProps) {
   const [renderDate, setRenderDate] = useState(
-    Temporal.Now.instant().epochSeconds
+    Temporal.Now.instant().epochMilliseconds
   );
   useEffect(() => {
     const interval = setInterval(() => {
-      setRenderDate(Temporal.Now.instant().epochSeconds);
+      setRenderDate(Temporal.Now.instant().epochMilliseconds);
     });
     return () => clearInterval(interval);
   }, []);
 
-  const duration = Temporal.Instant.fromEpochSeconds(renderDate).since(
-    Temporal.Instant.fromEpochSeconds(startTime),
+  const duration = Temporal.Instant.fromEpochMilliseconds(renderDate).since(
+    Temporal.Instant.fromEpochMilliseconds(startTime * 1000),
     { largestUnit: "hour" }
   );
 

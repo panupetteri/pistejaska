@@ -18,7 +18,7 @@ function useRecentlyPlayedGames(games: Game[]) {
   const [plays] = usePlays();
   const sortedPlays = orderBy(
     plays,
-    [(play) => play.getDate().epochSeconds, "created"],
+    [(play) => play.getDate().epochMilliseconds, "created"],
     ["desc", "desc"],
   );
   const recentlyPlayedGames: Game[] = [];
