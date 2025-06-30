@@ -27,11 +27,15 @@
     "analyze": "vite-bundle-visualizer",
     "lint": "eslint .",
     "start": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@google-cloud/firestore": "^7.10.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/json-schema": "^7.0.15",
     "@types/jsoneditor": "^9.9.5",
     "@types/lodash-es": "^4.17.12",
@@ -46,6 +50,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.11.0",
+    "jsdom": "^26.1.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "source-map-explorer": "^2.5.3",
@@ -54,6 +59,7 @@
     "typescript-eslint": "^8.10.0",
     "vite": "^5.4.9",
     "vite-bundle-visualizer": "^1.2.1",
-    "vite-plugin-checker": "^0.8.0"
+    "vite-plugin-checker": "^0.8.0",
+    "vitest": "^3.2.4"
   }
 }

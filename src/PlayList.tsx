@@ -66,7 +66,7 @@ const PlayList = (props: PlayListProps) => {
                     className="mx-auto object-cover rounded-full h-14 w-14 "
                   />
                 ) : (
-                  <div className="mx-auto object-cover rounded-full h-14 w-14 background-gray" />
+                  <div className="mx-auto object-cover rounded-full h-14 w-14 background-gray" data-testid="game-icon-placeholder" />
                 )}
               </ListItemIcon>
               <ListItemText

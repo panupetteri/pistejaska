@@ -18,5 +18,11 @@ export default () => {
     build: {
       outDir: "build",
     },
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/setupTests.ts",
+      exclude: ["**/node_modules/**", "**/src/lib/**", "**/App.test.tsx"],
+    },
   });
 };
