@@ -94,15 +94,17 @@ function DropdownMenu<Option extends DropdownMenuOption>({
       }
     }
   });
+  const backdropRef = useRef<HTMLDivElement | null>(null);
   const dropdown = (
     <CSSTransition
+      nodeRef={backdropRef}
       in={isOpen}
       timeout={100}
       classNames={animationClassNames}
       mountOnEnter
       unmountOnExit
     >
-      <div className={styles.backdrop} onClick={onBackdropClick}>
+      <div className={styles.backdrop} onClick={onBackdropClick} ref={backdropRef}>
         <div className={styles.leftFill} ref={leftRef} />
         <div className={styles.column}>
           <div className={styles.topFill} ref={topRef} />

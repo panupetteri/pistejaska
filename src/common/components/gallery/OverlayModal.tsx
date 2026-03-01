@@ -66,8 +66,11 @@ const OverlayModal: FC<OverlayModalProps> = ({
     setTimeout(setElementInStyles, 0);
   }, [setElementInStyles]);
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
   const element = (
     <CSSTransition
+      nodeRef={containerRef}
       in={visible}
       mountOnEnter
       unmountOnExit
@@ -79,8 +82,13 @@ const OverlayModal: FC<OverlayModalProps> = ({
     >
       <div
         className="fixed inset-0 z-10 transition-opacity bg-gray-900/90 backdrop-blur-lg"
-        ref={backgroundRef}
+        ref={containerRef}
       >
+        <div
+          className="fixed inset-0 z-10"
+          style={{ pointerEvents: "none" }}
+          ref={backgroundRef}
+        />
         <div
           className="absolute inset-0 transition-transform flex flex-col items-center justify-center"
           ref={innerOverlayRef}

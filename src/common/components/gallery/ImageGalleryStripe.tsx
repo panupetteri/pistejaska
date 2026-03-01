@@ -76,6 +76,8 @@ const ImageGalleryStripe: FC<ImageGalleryStripeProps> = ({
     };
   });
 
+  const imageRefs = useRef<Record<string, HTMLImageElement | null>>({});
+
   return (
     <div
       className={classNames(
@@ -86,6 +88,11 @@ const ImageGalleryStripe: FC<ImageGalleryStripeProps> = ({
     >
       {images.slice(0, renderCount).map(({ src, title }, index) => (
         <CSSTransition
+          nodeRef={{
+            get current() {
+              return imageRefs.current[src];
+            },
+          }}
           in={index < visibleCount}
           key={src}
           timeout={150}
@@ -102,13 +109,12 @@ const ImageGalleryStripe: FC<ImageGalleryStripeProps> = ({
             src={src}
             alt={title}
             // Keep track of the image HTML element that is currently "active"
-            ref={
-              index !== imageIndex
-                ? null
-                : (imageElement) => {
-                    sourceElementRef.current = imageElement;
-                  }
-            }
+            ref={(imageElement) => {
+              imageRefs.current[src] = imageElement;
+              if (index === imageIndex) {
+                sourceElementRef.current = imageElement;
+              }
+            }}
           />
         </CSSTransition>
       ))}
