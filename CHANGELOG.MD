@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Admin beta edit mode deleted game expansions on save
+- Nicer error handling on error situations
 
 ## 2024-10-18
 
