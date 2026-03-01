@@ -1,4 +1,4 @@
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 import { Link } from "react-router-dom";
 import Table from "./common/components/tables/Table";
 import TableHead from "./common/components/tables/TableHead";
@@ -22,7 +22,7 @@ const ReportTable = ({ rows, columns }: ReportTableProps) => {
 
   return (
     <div className="w-full">
-      <ReactTooltip />
+      <Tooltip />
       <Table>
         <TableHead>
           <TableRow>
@@ -38,7 +38,7 @@ const ReportTable = ({ rows, columns }: ReportTableProps) => {
                       color: "#fff",
                       marginLeft: "5px",
                     }}
-                    data-tip={c.tooltip}
+                    data-tooltip-content={c.tooltip}
                   >
                     ?
                   </span>

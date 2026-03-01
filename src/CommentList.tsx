@@ -7,7 +7,7 @@ import { useComments } from "./common/hooks/useComments";
 import { Comment } from "./domain/comment";
 import CommentListContainer from "./common/components/comments/CommentListContainer";
 import CommentDateGroup from "./common/components/comments/CommentDateGroup";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 import { deleteComment } from "./actions/deleteComment";
 import useCurrentUser from "./common/hooks/useCurrentUser";
 import { convertToLocaleDateString } from "./common/dateUtils";
@@ -82,7 +82,7 @@ export const CommentList = (props: { playId?: string }) => {
 
   return (
     <CommentListContainer className="mx-2">
-      <ReactTooltip />
+      <Tooltip />
       {groups.map((group, groupIdx) => (
         <CommentDateGroup key={groupIdx} heading={group.heading}>
           {group.senderGroups.map(

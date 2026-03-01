@@ -52,9 +52,9 @@ const CommentItem: FC<CommentItemProps> = ({ children, date, onDelete }) => {
               ? "bg-gray-200"
               : "bg-white"
           )}
-          data-tip={date.toLocaleString()}
-          data-delay-show={500}
-          data-tip-disable={dropdownState != null}
+          data-tooltip-content={date.toLocaleString()}
+          data-tooltip-delay-show={500}
+          data-tooltip-hidden={dropdownState != null}
           {...longPressEventHandlers}
         >
           <Markdown className="grow">{children}</Markdown>
