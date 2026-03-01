@@ -21,6 +21,7 @@ import GameAddView from "./admin/GameAddView";
 import GameEditView from "./admin/GameEditView";
 import GameJsonEditorView from "./admin/GameJsonEditorView";
 import { LoadingSpinner } from "./common/components/LoadingSpinner";
+import { ErrorBoundary } from "./common/components/ErrorBoundary";
 import NewPlayView from "./NewPlayView";
 import useCurrentUser from "./common/hooks/useCurrentUser";
 import { useEffect } from "react";
@@ -77,18 +78,20 @@ const App = () => {
   );
 
   return (
-    <div className="bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 min-h-screen">
-      <Router>
-        {user ? (
-          <>
-            <NavBar />
-            {app}
-          </>
-        ) : (
-          <Login />
-        )}
-      </Router>
-    </div>
+    <ErrorBoundary>
+      <div className="bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 min-h-screen">
+        <Router>
+          {user ? (
+            <>
+              <NavBar />
+              {app}
+            </>
+          ) : (
+            <Login />
+          )}
+        </Router>
+      </div>
+    </ErrorBoundary>
   );
 };
 
