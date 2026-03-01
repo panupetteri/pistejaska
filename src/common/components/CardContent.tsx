@@ -8,7 +8,7 @@ const CardContent: React.FC<HTMLAttributes<HTMLDivElement>> = ({
 }) => (
   <div
     className={classNames(
-      "container mx-auto w-full bg-white rounded-lg shadow",
+      "container mx-auto w-full bg-white rounded-lg shadow-sm",
       className
     )}
     {...props}

@@ -8,7 +8,7 @@ const logout = () => {
 };
 
 const navBarLinkClassName =
-  "block py-2 px-3 rounded text-sm font-medium uppercase hover:bg-black/10";
+  "block py-2 px-3 rounded-sm text-sm font-medium uppercase hover:bg-black/10";
 
 const menuIconSvg = (
   <svg

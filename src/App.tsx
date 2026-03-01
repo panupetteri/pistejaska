@@ -77,7 +77,7 @@ const App = () => {
   );
 
   return (
-    <div className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 min-h-screen">
+    <div className="bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 min-h-screen">
       <Router>
         {user ? (
           <>

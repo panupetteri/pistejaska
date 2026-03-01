@@ -17,7 +17,7 @@ const ImageGalleryList: FC<ImageGalleryListProps> = ({ images }) => {
           key={index}
           src={src}
           alt={title}
-          className="max-w-full max-h-80 shrink-0 cursor-pointer shadow hover:opacity-90 transition-opacity"
+          className="max-w-full max-h-80 shrink-0 cursor-pointer shadow-sm hover:opacity-90 transition-opacity"
           // Keep track of the image HTML element that is currently "active"
           ref={
             index !== imageIndex

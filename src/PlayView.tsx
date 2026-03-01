@@ -163,7 +163,7 @@ export const PlayView: FC = () => {
 
   const MobileHeader = () => (
     <div className="block md:hidden">
-      <div className="flex shadow-lg -mt-2 -ml-2 -mr-2 mb-4 rounded-t-xl p-2 bg-gradient-to-l from-slate-300 to-white">
+      <div className="flex shadow-lg -mt-2 -ml-2 -mr-2 mb-4 rounded-t-xl p-2 bg-linear-to-l from-slate-300 to-white">
         <img
           className="object-cover object-top  w-24 h-24 rounded-full shadow-lg cursor-pointer"
           onClick={() => navigate(`/games/${game.id}`)}

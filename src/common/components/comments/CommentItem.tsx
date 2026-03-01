@@ -46,7 +46,7 @@ const CommentItem: FC<CommentItemProps> = ({ children, date, onDelete }) => {
       >
         <div
           className={classNames(
-            "py-2 px-3 flex flex-row items-end gap-x-3 rounded-l rounded-r-2xl group-first:rounded-tl-2xl group-last:rounded-bl-2xl transition shadow",
+            "py-2 px-3 flex flex-row items-end gap-x-3 rounded-l rounded-r-2xl group-first:rounded-tl-2xl group-last:rounded-bl-2xl transition shadow-sm",
             justEmojis ? "text-3xl" : "text-sm",
             isPressing || dropdownState === "bubble"
               ? "bg-gray-200"
