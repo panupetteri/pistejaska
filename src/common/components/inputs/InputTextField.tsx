@@ -3,7 +3,7 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   Ref,
-  VFC,
+  FC,
 } from "react";
 import useId from "../../hooks/useId";
 import FieldBase from "./FieldBase";
@@ -24,7 +24,7 @@ interface InputTextFieldProps {
   type?: "text" | "url" | "email";
 }
 
-const InputTextField: VFC<InputTextFieldProps> = (props) => {
+const InputTextField: FC<InputTextFieldProps> = (props) => {
   const {
     id,
     label,

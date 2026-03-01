@@ -13,12 +13,17 @@ const remarkPlugings = [remarkGfm];
  */
 export default function Markdown({ children, className }: MarkdownProps) {
   return (
-    <ReactMarkdown
-      remarkPlugins={remarkPlugings}
-      linkTarget="_blank"
-      className={className}
-    >
-      {children}
-    </ReactMarkdown>
+    <div className={className}>
+      <ReactMarkdown
+        remarkPlugins={remarkPlugings}
+        components={{
+          a: (props) => (
+            <a target="_blank" rel="noopener noreferrer" {...props} />
+          ),
+        }}
+      >
+        {children}
+      </ReactMarkdown>
+    </div>
   );
 }

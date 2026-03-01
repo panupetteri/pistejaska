@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, useEffect, useRef, useState, VFC } from "react";
+import { useCallback, useEffect, useRef, useState, FC } from "react";
 import { CSSTransition } from "react-transition-group";
 import ImageGalleryOverlay from "./ImageGalleryOverlay";
 import styles from "./ImageGalleryStripe.module.css";
@@ -31,7 +31,7 @@ function scrollIntoViewHorizontally(element?: HTMLElement | null): void {
   }
 }
 
-const ImageGalleryStripe: VFC<ImageGalleryStripeProps> = ({
+const ImageGalleryStripe: FC<ImageGalleryStripeProps> = ({
   className,
   images,
 }) => {

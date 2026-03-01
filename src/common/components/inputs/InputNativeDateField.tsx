@@ -3,7 +3,7 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   Ref,
-  VFC,
+  FC,
 } from "react";
 import useId from "../../hooks/useId";
 import FieldBase from "./FieldBase";
@@ -23,7 +23,7 @@ interface InputNativeDateFieldProps {
   autoFocus?: boolean;
 }
 
-const InputNativeDateField: VFC<InputNativeDateFieldProps> = (props) => {
+const InputNativeDateField: FC<InputNativeDateFieldProps> = (props) => {
   const {
     id,
     label,

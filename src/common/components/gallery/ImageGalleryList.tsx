@@ -1,4 +1,4 @@
-import { useRef, useState, VFC } from "react";
+import { useRef, useState, FC } from "react";
 import ImageGalleryOverlay from "./ImageGalleryOverlay";
 import { ImageGalleryItem } from "./ImageGallerySwipeView";
 
@@ -6,7 +6,7 @@ interface ImageGalleryListProps {
   images: ImageGalleryItem[];
 }
 
-const ImageGalleryList: VFC<ImageGalleryListProps> = ({ images }) => {
+const ImageGalleryList: FC<ImageGalleryListProps> = ({ images }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const sourceElementRef = useRef<HTMLImageElement | null>(null);

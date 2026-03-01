@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ChangeEvent, VFC } from "react";
+import { ChangeEvent, FC } from "react";
 import styles from "./CheckboxField.module.css";
 
 interface CheckboxFieldProps {
@@ -10,7 +10,7 @@ interface CheckboxFieldProps {
   onChange: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CheckboxField: VFC<CheckboxFieldProps> = (props) => {
+const CheckboxField: FC<CheckboxFieldProps> = (props) => {
   const { id, className, label, checked, onChange } = props;
   return (
     <label className={classNames(styles.label, className)}>

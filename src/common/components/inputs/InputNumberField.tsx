@@ -3,7 +3,7 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   Ref,
-  VFC,
+  FC,
 } from "react";
 import useId from "../../hooks/useId";
 import FieldBase from "./FieldBase";
@@ -27,7 +27,7 @@ interface InputNumberFieldProps {
   required?: boolean;
 }
 
-const InputNumberField: VFC<InputNumberFieldProps> = (props) => {
+const InputNumberField: FC<InputNumberFieldProps> = (props) => {
   const {
     id,
     label,

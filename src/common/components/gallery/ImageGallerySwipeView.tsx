@@ -1,4 +1,4 @@
-import { VFC } from "react";
+import { FC } from "react";
 
 import { Temporal } from "@js-temporal/polyfill";
 import { mapVirtualIdxToArrayIdx } from "./utils";
@@ -38,7 +38,7 @@ const slideRenderer = (images: ImageGalleryItem[], index: number) => {
   );
 };
 
-const ImageGallerySwipeView: VFC<ImageGallerySwipeViewProps> = ({
+const ImageGallerySwipeView: FC<ImageGallerySwipeViewProps> = ({
   images,
   index,
   onIndexChange,

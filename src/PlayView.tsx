@@ -1,4 +1,4 @@
-import React, { FC, useMemo, VFC } from "react";
+import React, { FC, useMemo } from "react";
 import { Play } from "./domain/play";
 import { useGames } from "./common/hooks/useGames";
 import { Game, imageField } from "./domain/game";
@@ -43,7 +43,7 @@ import { playCollection } from "./common/hooks/usePlays";
 
 const hiddenMiscFields = ["images", "name", "date"];
 
-const PlayMiscFields: VFC<{ game: Game; play: Play }> = ({ game, play }) => {
+const PlayMiscFields: FC<{ game: Game; play: Play }> = ({ game, play }) => {
   const date = play.getDate();
   const expansionIds = play.expansions;
   const visibleFields = orderBy(

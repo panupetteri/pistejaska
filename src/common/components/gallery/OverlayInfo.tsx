@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { VFC } from "react";
+import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
 import { convertToLocaleDateString } from "../../dateUtils";
@@ -11,7 +11,7 @@ interface OverlayInfoProps {
   link: string;
 }
 
-const OverlayInfo: VFC<OverlayInfoProps> = ({
+const OverlayInfo: FC<OverlayInfoProps> = ({
   title,
   date,
   link,

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-const ListItemText: React.VFC<{
+const ListItemText: React.FC<{
   title: ReactNode;
   description?: ReactNode;
 }> = ({ title, description }) => (

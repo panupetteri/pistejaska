@@ -1,4 +1,4 @@
-import { ReactElement, VFC } from "react";
+import { ReactElement, FC } from "react";
 import DropdownMenu from "../dropdowns/DropdownMenu";
 
 interface CommentItemActionMenuProps {
@@ -8,7 +8,7 @@ interface CommentItemActionMenuProps {
   onDelete: (() => void) | null;
 }
 
-const CommentItemActionMenu: VFC<CommentItemActionMenuProps> = ({
+const CommentItemActionMenu: FC<CommentItemActionMenuProps> = ({
   isOpen,
   onClose,
   children,

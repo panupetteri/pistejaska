@@ -1,4 +1,4 @@
-import { RefObject, VFC } from "react";
+import { RefObject, FC } from "react";
 import OverlayCloseButton from "./OverlayCloseButton";
 import OverlayInfo from "./OverlayInfo";
 import OverlayModal from "./OverlayModal";
@@ -16,7 +16,7 @@ interface ImageGalleryOverlayProps {
   sourceElementRef?: RefObject<HTMLElement | null>;
 }
 
-const ImageGalleryOverlay: VFC<ImageGalleryOverlayProps> = ({
+const ImageGalleryOverlay: FC<ImageGalleryOverlayProps> = ({
   images,
   index,
   onIndexChange,

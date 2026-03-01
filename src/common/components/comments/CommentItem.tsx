@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import classNames from "classnames";
-import { useCallback, useState, VFC } from "react";
+import { useCallback, useState, FC } from "react";
 import { convertToLocaleTimeString } from "../../dateUtils";
 import useLongPress from "../../hooks/useLongPress";
 import { containsJustEmojis } from "../../stringUtils";
@@ -27,7 +27,7 @@ const actionMenuIcon = (
   </svg>
 );
 
-const CommentItem: VFC<CommentItemProps> = ({ children, date, onDelete }) => {
+const CommentItem: FC<CommentItemProps> = ({ children, date, onDelete }) => {
   const [dropdownState, setDropdownState] = useState<null | "bubble" | "icon">(
     null
   );
