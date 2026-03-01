@@ -137,14 +137,15 @@ export default function GameForm({ game }: GameEditViewProps) {
     setIsSaving(true);
 
     try {
-      const game: GameDefinition = {
+      const updatedGame: GameDefinition = {
+        ...game,
         ...basicInfo,
         scoreFields: Object.values(scoreFields),
         miscFields: Object.values(miscFields),
       };
-      generateMissingIds(game);
+      generateMissingIds(updatedGame);
 
-      await saveGame(game);
+      await saveGame(updatedGame);
       setIsSaving(false);
       setIsSaved(true);
       setTimeout(() => navigate("/admin"), 2000);
