@@ -4,6 +4,7 @@ import {
   MouseEventHandler,
   ReactElement,
   ReactNode,
+  RefAttributes,
   SyntheticEvent,
   useEffect,
   useRef,
@@ -53,9 +54,12 @@ function DropdownMenu<Option extends DropdownMenuOption>({
   const leftRef = useRef<HTMLDivElement | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
   const firstSelectedOptionRef = useRef<HTMLLIElement | null>(null);
-  const singleChild = cloneElement(Children.only(children), {
-    ref: anchorRef,
-  } as any);
+  const singleChild = cloneElement(
+    Children.only(children) as ReactElement<RefAttributes<HTMLElement>>,
+    {
+      ref: anchorRef,
+    }
+  );
   const firstSelectedOptionIndex = options.findIndex(
     (option) => option.selected
   );
