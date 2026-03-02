@@ -200,6 +200,28 @@ export const schema: JSONSchema7 = {
       type: "array",
       items: miscFieldSchema,
     },
+    expansions: {
+      title: "Extensions",
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: fieldIdSchema,
+          name: fieldNameSchema,
+          scoreFields: {
+            title: "Score fields",
+            type: "array",
+            items: numberFieldSchema,
+          },
+          miscFields: {
+            title: "Other fields",
+            type: "array",
+            items: miscFieldSchema,
+          },
+        },
+        required: ["id", "name"],
+      },
+    },
   },
   required: ["id", "name", "icon", "simultaneousTurns", "scoreFields"],
 };

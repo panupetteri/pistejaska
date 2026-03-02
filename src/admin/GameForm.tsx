@@ -4,6 +4,7 @@ import EditGameBasicInfo from "./EditGameBasicInfo";
 import {
   GameBasicInfoDefinition,
   GameDefinition,
+  GameExpansionDefinition,
   GameFieldDefinition,
   GameMiscFieldDefinition,
   GameScoreFieldDefinition,
@@ -18,17 +19,18 @@ import Spinner from "../common/components/Spinner";
 import { IconSmileyFace } from "../common/components/icons/IconSmileyFace";
 import classNames from "classnames";
 import saveGame from "../utils/saveGame";
+import EditGameExpansion, {
+  KeyedExpansion,
+  KeyedMiscFields,
+  KeyedScoreFields,
+} from "./EditGameExpansion";
 
 interface GameEditViewProps {
   game?: GameDefinition;
 }
 
-interface KeyedScoreFields {
-  [key: string]: GameScoreFieldDefinition;
-}
-
-interface KeyedMiscFields {
-  [key: string]: GameMiscFieldDefinition;
+interface KeyedExpansions {
+  [key: string]: KeyedExpansion;
 }
 
 function toKeyedFields<
@@ -55,17 +57,32 @@ function generateMissingIds(game: GameDefinition): void {
   if (!game.id && game.name) {
     game.id = slugify(game.name);
   }
-  [...game.scoreFields, ...(game.miscFields ?? [])].forEach((field) => {
-    if (!field.id && field.name) {
-      field.id = slugify(field.name);
+  const processFields = (
+    fields: GameFieldDefinition<number | string | string[]>[],
+  ) => {
+    fields.forEach((field) => {
+      if (!field.id && field.name) {
+        field.id = slugify(field.name);
+      }
+      if (field.type === "text") {
+        field.options?.forEach((option) => {
+          if (!option.value && option.label) {
+            option.value = slugify(option.label);
+          }
+        });
+      }
+    });
+  };
+
+  processFields(game.scoreFields);
+  processFields(game.miscFields ?? []);
+
+  game.expansions?.forEach((expansion) => {
+    if (!expansion.id && expansion.name) {
+      expansion.id = slugify(expansion.name);
     }
-    if (field.type === "text") {
-      field.options?.forEach((option) => {
-        if (!option.value && option.label) {
-          option.value = slugify(option.label);
-        }
-      });
-    }
+    processFields(expansion.scoreFields ?? []);
+    processFields(expansion.miscFields ?? []);
   });
 }
 
@@ -94,12 +111,38 @@ function getInitialMiscFields(
   return toKeyedFields(miscFields ?? []);
 }
 
+function getInitialExpansions(
+  expansions?: GameExpansionDefinition[],
+): KeyedExpansions {
+  return (expansions ?? []).reduce(
+    (result, expansion) => ({
+      ...result,
+      [crypto.randomUUID()]: {
+        id: expansion.id,
+        name: expansion.name,
+        scoreFields: toKeyedFields(expansion.scoreFields ?? []),
+        miscFields: toKeyedFields(expansion.miscFields ?? []),
+      },
+    }),
+    {},
+  );
+}
+
 function getEmptyScoreField(): GameScoreFieldDefinition {
   return { id: "", name: "", type: "number" };
 }
 
 function getEmptyMiscField(): GameMiscFieldDefinition<string> {
   return { id: "", name: "", type: "text" };
+}
+
+function getEmptyExpansion(): KeyedExpansion {
+  return {
+    id: "",
+    name: "",
+    scoreFields: {},
+    miscFields: {},
+  };
 }
 
 export default function GameForm({ game }: GameEditViewProps) {
@@ -110,6 +153,9 @@ export default function GameForm({ game }: GameEditViewProps) {
   );
   const [miscFields, setMiscFields] = useState(() =>
     getInitialMiscFields(game?.miscFields),
+  );
+  const [expansions, setExpansions] = useState(() =>
+    getInitialExpansions(game?.expansions),
   );
   const [isInitialRender, setIsInitialRender] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -131,6 +177,13 @@ export default function GameForm({ game }: GameEditViewProps) {
     });
   };
 
+  const addExpansion = () => {
+    setExpansions({
+      ...expansions,
+      [crypto.randomUUID()]: getEmptyExpansion(),
+    });
+  };
+
   const onSave = async (event: FormEvent) => {
     event.preventDefault();
     if (isSaving || isSaved) return;
@@ -142,6 +195,12 @@ export default function GameForm({ game }: GameEditViewProps) {
         ...basicInfo,
         scoreFields: Object.values(scoreFields),
         miscFields: Object.values(miscFields),
+        expansions: Object.values(expansions).map((e) => ({
+          id: e.id,
+          name: e.name,
+          scoreFields: Object.values(e.scoreFields),
+          miscFields: Object.values(e.miscFields),
+        })),
       };
       generateMissingIds(updatedGame);
 
@@ -205,6 +264,24 @@ export default function GameForm({ game }: GameEditViewProps) {
           <ButtonLight onClick={addMiscField}>
             Add miscellaneous field
           </ButtonLight>
+        </div>
+
+        <Heading2 className="mt-6">Extensions</Heading2>
+        <div className="flex flex-col items-center gap-4">
+          {Object.entries(expansions).map(([key, expansion]) => (
+            <EditGameExpansion
+              key={key}
+              expansion={expansion}
+              onExpansionChange={(updatedExpansion) =>
+                setExpansions({ ...expansions, [key]: updatedExpansion })
+              }
+              onExpansionRemove={() => setExpansions(omit(expansions, key))}
+              enableAutoFocus={!isInitialRender}
+            />
+          ))}
+        </div>
+        <div className="text-center mt-3">
+          <ButtonLight onClick={addExpansion}>Add extension</ButtonLight>
         </div>
 
         <div className="flex flex-col items-center my-6">
