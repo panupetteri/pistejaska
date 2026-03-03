@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import PlayList from "./PlayList";
 import { Play, PlayDTO, Player } from "./domain/play";
-import { Game } from "./domain/game";
+import { Game, GameDefinition } from "./domain/game";
 import { Comment, CommentDTO } from "./domain/comment";
 import { UserDTO } from "./domain/user";
 
@@ -47,22 +47,21 @@ const createMockPlay = (overrides: Partial<PlayDTO> = {}): Play => {
 };
 
 // Helper function to create mock Game instances
-const createMockGame = (overrides: Partial<Game> = {}): Game => {
-  return {
+const createMockGame = (overrides: Partial<GameDefinition> = {}): Game => {
+  const gameData: GameDefinition = {
     id: "game-1",
     name: "Test Board Game",
     icon: "https://example.com/game-icon.jpg",
     scoreFields: [],
-    miscFields: [],
+    simultaneousTurns: false,
     ...overrides,
-  } as Game;
+  };
+  return new Game(gameData);
 };
 
 // Helper function to create mock Comment instances
 const createMockComment = (overrides: Partial<CommentDTO> = {}): Comment => {
-  const mockUsers: UserDTO[] = [
-    { id: "user-1", displayName: "Test User" },
-  ];
+  const mockUsers: UserDTO[] = [{ id: "user-1", displayName: "Test User" }];
   const mockCommentDTO: CommentDTO = {
     id: "comment-1",
     playId: "play-1",
@@ -316,5 +315,207 @@ describe("PlayList Component", () => {
 
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "/view/play-1?from=/");
+  });
+
+  describe("Search functionality", () => {
+    const searchPlays = [
+      createMockPlay({
+        id: "play-alpha",
+        gameId: "game-1",
+        players: [
+          { id: "p1", name: "Alice" },
+          { id: "p2", name: "Charlie" },
+        ],
+        misc: [{ fieldId: "name", data: "Alpha Session" }],
+      }),
+      createMockPlay({
+        id: "play-beta",
+        gameId: "game-2",
+        players: [
+          { id: "p1", name: "Alice" },
+          { id: "p3", name: "David" },
+        ],
+        misc: [{ fieldId: "name", data: "Beta Session" }],
+      }),
+    ];
+    const searchGames = [
+      createMockGame({ id: "game-1", name: "Chess" }),
+      createMockGame({ id: "game-2", name: "Go" }),
+    ];
+
+    it("filters by play name", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={searchPlays} games={searchGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "Alpha");
+
+      expect(screen.getByText("Alpha Session")).toBeInTheDocument();
+      expect(screen.queryByText("Beta Session")).not.toBeInTheDocument();
+    });
+
+    it("filters by game name", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={searchPlays} games={searchGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "Go");
+
+      expect(screen.getByText("Beta Session")).toBeInTheDocument();
+      expect(screen.queryByText("Alpha Session")).not.toBeInTheDocument();
+    });
+
+    it("filters by player name", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={searchPlays} games={searchGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "Charlie");
+
+      expect(screen.getByText("Alpha Session")).toBeInTheDocument();
+      expect(screen.queryByText("Beta Session")).not.toBeInTheDocument();
+    });
+
+    it("shows multiple results for common player name", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={searchPlays} games={searchGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "Alice");
+
+      expect(screen.getByText("Alpha Session")).toBeInTheDocument();
+      expect(screen.getByText("Beta Session")).toBeInTheDocument();
+    });
+
+    it("is case-insensitive", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={searchPlays} games={searchGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "alpha");
+
+      expect(screen.getByText("Alpha Session")).toBeInTheDocument();
+    });
+
+    it("shows no results for non-matching search", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={searchPlays} games={searchGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "Zebra");
+
+      expect(screen.queryByText("Alpha Session")).not.toBeInTheDocument();
+      expect(screen.queryByText("Beta Session")).not.toBeInTheDocument();
+    });
+
+    it("does not match against field values or scores", async () => {
+      const user = userEvent.setup();
+      const fieldMatchPlays = [
+        createMockPlay({
+          id: "play-field",
+          misc: [{ fieldId: "difficulty", data: "Easy" }],
+          scores: [{ playerId: "p1", fieldId: "bonus", score: 999 }],
+        }),
+      ];
+
+      render(
+        <PlayListWrapper>
+          <PlayList plays={fieldMatchPlays} games={mockGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+
+      // Searching for the field value "Easy" should NOT match
+      await user.type(searchInput, "Easy");
+      expect(screen.queryByText("2024-01-15")).not.toBeInTheDocument();
+
+      // Searching for the score "999" should NOT match
+      await user.clear(searchInput);
+      await user.type(searchInput, "999");
+      expect(screen.queryByText("2024-01-15")).not.toBeInTheDocument();
+    });
+
+    it("matches multiple words independently (AND logic)", async () => {
+      const user = userEvent.setup();
+      const cavernaGames = [
+        createMockGame({ id: "caverna", name: "Caverna" }),
+        createMockGame({ id: "mars", name: "Terraforming Mars" }),
+      ];
+      const cavernaPlays = [
+        createMockPlay({
+          id: "p1",
+          gameId: "caverna",
+          players: [
+            { id: "k", name: "kaaku" },
+            { id: "p", name: "panu" },
+          ],
+        }),
+        createMockPlay({
+          id: "p2",
+          gameId: "caverna",
+          players: [
+            { id: "h", name: "heikki" },
+            { id: "k", name: "kaaku" },
+          ],
+        }),
+        createMockPlay({
+          id: "p3",
+          gameId: "caverna",
+          players: [
+            { id: "p", name: "panu" },
+            { id: "h", name: "heikki" },
+          ],
+        }),
+        createMockPlay({
+          id: "p4",
+          gameId: "mars",
+          players: [
+            { id: "k", name: "kaaku" },
+            { id: "p", name: "panu" },
+          ],
+        }),
+      ];
+
+      render(
+        <PlayListWrapper>
+          <PlayList plays={cavernaPlays} games={cavernaGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+
+      // searching for "caverna panu" should return plays p1 and p3 (the ones from Caverna where Panu played)
+      await user.type(searchInput, "caverna panu");
+
+      const results = screen.getAllByRole("link");
+      expect(results).toHaveLength(2);
+      expect(results[0]).toHaveAttribute("href", "/view/p1?from=/");
+      expect(results[1]).toHaveAttribute("href", "/view/p3?from=/");
+    });
   });
 });

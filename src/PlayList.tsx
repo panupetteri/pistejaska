@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from "react";
+import { useMemo, useReducer, useState } from "react";
 import { Play } from "./domain/play";
 import { orderBy } from "lodash-es";
 import { Game } from "./domain/game";
@@ -11,6 +11,7 @@ import ListLinkItem from "./common/components/lists/ListLinkItem";
 import { convertToLocaleDateString } from "./common/dateUtils";
 import { Comment } from "./domain/comment";
 import { IconComment } from "./common/components/icons/IconComment";
+import InputTextField from "./common/components/inputs/InputTextField";
 
 interface PlayListProps {
   plays: Play[];
@@ -31,8 +32,9 @@ function getPlayLabel(play: Play) {
 
 const PlayList = (props: PlayListProps) => {
   const { plays, games, comments } = props;
+  const [search, setSearch] = useState("");
 
-  const data = useMemo(
+  const sortedData = useMemo(
     () =>
       orderBy(
         plays,
@@ -42,12 +44,46 @@ const PlayList = (props: PlayListProps) => {
     [plays],
   );
 
+  // Pre-calculate searchable strings for performance during typing
+  const searchableData = useMemo(() => {
+    return sortedData.map((play) => {
+      const game = games.find((g) => g.id === play.gameId);
+      const playComments = comments.filter((c) => c.playId === play.id);
+      const parts = [
+        play.getName() ?? "",
+        game?.name ?? "",
+        ...play.players.map((p) => p.name),
+        ...(game?.expansions
+          ?.filter((e) => play.expansions.includes(e.id))
+          .map((e) => e.name) ?? []),
+        ...playComments.map((c) => c.comment),
+      ].map((part) => String(part).toLowerCase());
+
+      return { play, parts };
+    });
+  }, [sortedData, games, comments]);
+
+  const filteredData = useMemo(() => {
+    if (!search.trim()) {
+      return sortedData;
+    }
+    const words = search.toLowerCase().split(/\s+/).filter(Boolean);
+    return searchableData
+      .filter(({ parts }) =>
+        words.every((word) => parts.some((part) => part.includes(word))),
+      )
+      .map(({ play }) => play);
+  }, [searchableData, search, sortedData]);
+
   const [limit, increaseLimit] = useReducer((oldLimit) => oldLimit * 2, 10);
-  const currentData = data.slice(0, limit);
-  const hasMore = limit < data.length;
+  const currentData = filteredData.slice(0, limit);
+  const hasMore = limit < filteredData.length;
 
   return (
     <>
+      <div className="px-2 mb-4">
+        <InputTextField label="Search..." value={search} onChange={setSearch} />
+      </div>
       <List>
         {currentData.map((play) => {
           const game = games.find((g) => g.id === play.gameId);
@@ -66,7 +102,10 @@ const PlayList = (props: PlayListProps) => {
                     className="mx-auto object-cover rounded-full h-14 w-14 "
                   />
                 ) : (
-                  <div className="mx-auto object-cover rounded-full h-14 w-14 background-gray" data-testid="game-icon-placeholder" />
+                  <div
+                    className="mx-auto object-cover rounded-full h-14 w-14 background-gray"
+                    data-testid="game-icon-placeholder"
+                  />
                 )}
               </ListItemIcon>
               <ListItemText
