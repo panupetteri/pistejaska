@@ -79,7 +79,12 @@ describe("PlayFormField", () => {
       name: "Duration",
       type: "duration",
     };
-    const play = createMockPlay();
+    
+    // Set system time to match the default mock play creation date (2024-01-15)
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-01-15T12:00:00Z"));
+    
+    const play = createMockPlay({ created: "2024-01-15T10:00:00Z" });
     // Spy on the domain method that calculates duration
     vi.spyOn(play, "getTimeInHoursSinceCreation").mockReturnValue(1.5);
 
@@ -102,5 +107,7 @@ describe("PlayFormField", () => {
 
     fireEvent.click(timerButton);
     expect(mockOnChange).toHaveBeenCalledWith(1.5, field);
+    
+    vi.useRealTimers();
   });
 });
