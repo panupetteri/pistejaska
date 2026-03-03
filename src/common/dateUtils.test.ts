@@ -20,15 +20,16 @@ describe("dateUtils", () => {
   it("converts instant to plain time", () => {
     const plainTime = convertToPlainTime(instant);
     // Note: timezone could affect this. In UTC it is 12:30:00
-    // The code uses Temporal.Now.timeZoneId() which is local.
-    // Let's just check if it's a Temporal.PlainTime
     expect(plainTime).toBeInstanceOf(Temporal.PlainTime);
+    expect(plainTime.hour).toBeGreaterThanOrEqual(0);
+    expect(plainTime.hour).toBeLessThan(24);
+    expect(plainTime.minute).toBe(30);
   });
 
   it("converts to locale strings", () => {
-    // These might be locale dependent, but we can check if they return something non-empty
-    expect(convertToLocaleDateString(instant)).toBeTruthy();
-    expect(convertToLocaleTimeString(instant)).toBeTruthy();
+    // Should return a string that contains at least the day or year info
+    expect(convertToLocaleDateString(instant)).toContain("2023");
+    expect(convertToLocaleTimeString(instant)).toMatch(/\d+/); // Should contain some numbers for time
   });
 
   it("handles null/undefined instants for locale strings", () => {

@@ -78,8 +78,17 @@ describe("rankScores", () => {
     const scores = [{ score: 10 }, { score: 10 }, { score: 10 }];
     const ranked = rankScores(scores);
     
-    expect(ranked.every(r => r.position === 1)).toBe(true);
-    expect(ranked.every(r => r.normalizedScore === null)).toBe(true);
-    expect(ranked.every(r => r.normalizedPosition === null)).toBe(true);
+    expect(ranked).toHaveLength(3);
+    expect(ranked[0].position).toBe(1);
+    expect(ranked[1].position).toBe(1);
+    expect(ranked[2].position).toBe(1);
+    
+    expect(ranked[0].normalizedScore).toBeNull();
+    expect(ranked[1].normalizedScore).toBeNull();
+    expect(ranked[2].normalizedScore).toBeNull();
+    
+    expect(ranked[0].normalizedPosition).toBeNull();
+    expect(ranked[1].normalizedPosition).toBeNull();
+    expect(ranked[2].normalizedPosition).toBeNull();
   });
 });

@@ -93,7 +93,9 @@ describe("Play", () => {
       ...getMockPlayDTO(),
       misc: [{ fieldId: "date", data: "2023-01-01" }],
     });
-    expect(minimalPlay.getName()).toBeTruthy(); // Should be locale date string
+    // For ISO date string 2023-01-01, getName should contain the formatted date
+    const name = minimalPlay.getName();
+    expect(name).toContain("2023");
     expect(minimalPlay.getDisplayName()).toBe("");
   });
 
@@ -140,7 +142,9 @@ describe("Play", () => {
       ],
     });
     expect(playWithImages.getImages()).toEqual(["img1.jpg", "img2.jpg"]);
-    expect(playWithImages.getImageUrls()[0]).toContain("img1.jpg");
+    const imageUrls = playWithImages.getImageUrls();
+    expect(imageUrls[0]).toBe("https://firebasestorage.googleapis.com/v0/b/pistejaska-dev.appspot.com/o/play-images%2Fimg1.jpg?alt=media");
+    expect(imageUrls[1]).toBe("https://firebasestorage.googleapis.com/v0/b/pistejaska-dev.appspot.com/o/play-images%2Fimg2.jpg?alt=media");
   });
 
   it("formats misc field display values", () => {
