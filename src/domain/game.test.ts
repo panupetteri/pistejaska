@@ -1,12 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { Game, GameDefinition } from "./game";
+import { Game } from "./game";
+import { createMockGameDefinition } from "../test-utils/factories";
 
 describe("Game", () => {
-  const mockGameDef: GameDefinition = {
+  const mockGameDef = createMockGameDefinition({
     id: "test-game",
     name: "Test Game",
-    icon: "https://example.com/icon.png",
-    simultaneousTurns: false,
     scoreFields: [
       { id: "points", name: "Points", type: "number" },
     ],
@@ -17,7 +16,7 @@ describe("Game", () => {
         scoreFields: [{ id: "exp-points", name: "Exp Points", type: "number" }],
       },
     ],
-  };
+  });
 
   it("initializes correctly", () => {
     const game = new Game(mockGameDef);

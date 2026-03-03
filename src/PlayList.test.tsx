@@ -3,10 +3,11 @@ import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import PlayList from "./PlayList";
-import { Play, PlayDTO, Player } from "./domain/play";
-import { Game, GameDefinition } from "./domain/game";
-import { Comment, CommentDTO } from "./domain/comment";
-import { UserDTO } from "./domain/user";
+import {
+  createMockComment,
+  createMockGame,
+  createMockPlay,
+} from "./test-utils/factories";
 
 // Mock window.location
 Object.defineProperty(window, "location", {
@@ -21,65 +22,20 @@ vi.mock("./common/dateUtils", () => ({
   convertToLocaleDateString: vi.fn(() => "2024-01-15"),
 }));
 
-// Helper function to create mock Play instances
-const createMockPlay = (overrides: Partial<PlayDTO> = {}): Play => {
-  const mockPlayDTO: PlayDTO = {
-    id: "play-1",
-    gameId: "game-1",
-    expansions: [],
-    scores: [
-      { playerId: "player-1", fieldId: "score", score: 100 },
-      { playerId: "player-2", fieldId: "score", score: 80 },
-    ],
-    players: [
-      { id: "player-1", name: "Alice" },
-      { id: "player-2", name: "Bob" },
-    ] as Player[],
-    misc: [
-      { fieldId: "name", data: "Test Game Session" },
-      { fieldId: "date", data: "2024-01-15T10:00:00Z" },
-    ],
-    created: "2024-01-15T10:00:00.000Z",
-    createdBy: "user-1",
-    ...overrides,
-  };
-  return new Play(mockPlayDTO);
-};
-
-// Helper function to create mock Game instances
-const createMockGame = (overrides: Partial<GameDefinition> = {}): Game => {
-  const gameData: GameDefinition = {
-    id: "game-1",
-    name: "Test Board Game",
-    icon: "https://example.com/game-icon.jpg",
-    scoreFields: [],
-    simultaneousTurns: false,
-    ...overrides,
-  };
-  return new Game(gameData);
-};
-
-// Helper function to create mock Comment instances
-const createMockComment = (overrides: Partial<CommentDTO> = {}): Comment => {
-  const mockUsers: UserDTO[] = [{ id: "user-1", displayName: "Test User" }];
-  const mockCommentDTO: CommentDTO = {
-    id: "comment-1",
-    playId: "play-1",
-    comment: "Great game!",
-    createdOn: "2024-01-15T11:00:00.000Z",
-    userId: "user-1",
-    ...overrides,
-  };
-  return new Comment(mockCommentDTO, mockUsers);
-};
-
 // Wrapper component to provide routing context
 const PlayListWrapper = ({ children }: { children: React.ReactNode }) => (
   <MemoryRouter>{children}</MemoryRouter>
 );
 
 describe("PlayList Component", () => {
-  const mockPlays = [createMockPlay()];
+  const mockPlays = [
+    createMockPlay({
+      scores: [
+        { playerId: "player-1", fieldId: "score", score: 100 },
+        { playerId: "player-2", fieldId: "score", score: 80 },
+      ],
+    }),
+  ];
   const mockGames = [createMockGame()];
   const mockComments = [createMockComment()];
 

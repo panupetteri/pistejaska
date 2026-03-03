@@ -3,26 +3,13 @@ import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ReportGameList } from "./ReportGameList";
-import { Game, GameDefinition } from "./domain/game";
 import { useGames } from "./common/hooks/useGames";
 import { usePlays } from "./common/hooks/usePlays";
+import { createMockGame } from "./test-utils/factories";
 
 // Mock the hooks
 vi.mock("./common/hooks/useGames");
 vi.mock("./common/hooks/usePlays");
-
-// Helper function to create mock Game instances
-const createMockGame = (overrides: Partial<GameDefinition> = {}): Game => {
-  const gameData: GameDefinition = {
-    id: "game-1",
-    name: "Test Board Game",
-    icon: "https://example.com/game-icon.jpg",
-    scoreFields: [],
-    simultaneousTurns: false,
-    ...overrides,
-  };
-  return new Game(gameData);
-};
 
 // Wrapper component to provide routing context
 const Wrapper = ({ children }: { children: React.ReactNode }) => (

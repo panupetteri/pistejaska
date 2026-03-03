@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { Play, PlayDTO } from "./play";
+import { Play } from "./play";
+import { createMockPlayDTO } from "../test-utils/factories";
 
 describe("Play", () => {
-  const mockPlayDTO: PlayDTO = {
+  const mockPlayDTO = createMockPlayDTO({
     id: "play-1",
     gameId: "7-wonders",
     expansions: [],
@@ -22,9 +23,7 @@ describe("Play", () => {
       { fieldId: "date", data: "2023-01-01" },
       { fieldId: "location", data: "Alice's House" },
     ],
-    created: "2023-01-01T12:00:00.000Z",
-    createdBy: "user-1",
-  };
+  });
 
   it("calculates total scores correctly (excluding tie-breakers)", () => {
     const play = new Play(mockPlayDTO);

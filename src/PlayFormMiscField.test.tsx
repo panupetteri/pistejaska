@@ -1,66 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { PlayFormMiscField } from "./PlayFormMiscField";
-import { Play, PlayDTO, Player } from "./domain/play";
 import { GameMiscFieldDefinition } from "./domain/game";
 import React from "react";
 import { FormFocusContextProvider } from "./utils/focus";
-
-// Mock temporal polyfill
-vi.mock("@js-temporal/polyfill", () => ({
-  Temporal: {
-    Now: {
-      timeZoneId: () => "UTC",
-      plainDateISO: () => ({
-        equals: () => true,
-      }),
-      instant: () => ({
-        epochMilliseconds: 1705312800000,
-      }),
-    },
-    PlainDate: {
-      from: () => ({}),
-    },
-    Instant: {
-      from: () => ({
-        epochMilliseconds: 1705312800000,
-        toString: () => "2024-01-15T10:00:00.000Z",
-        since: () => ({
-          hours: 1,
-          minutes: 30,
-          toString: () => "01:30",
-        }),
-      }),
-      fromEpochMilliseconds: () => ({
-        since: () => ({
-          hours: 1,
-          minutes: 30,
-          toString: () => "01:30",
-        }),
-      }),
-    },
-  },
-}));
-
-const createMockPlayer = (id: string, name: string): Player => ({
-  id,
-  name,
-});
-
-const createMockPlay = (overrides: Partial<PlayDTO> = {}): Play => {
-  const mockPlayDTO: PlayDTO = {
-    id: "play-1",
-    gameId: "game-1",
-    expansions: [],
-    scores: [],
-    players: [],
-    misc: [],
-    created: "2024-01-15T10:00:00.000Z",
-    createdBy: "user-1",
-    ...overrides,
-  };
-  return new Play(mockPlayDTO);
-};
+import { createMockPlay, createMockPlayer } from "./test-utils/factories";
 
 describe("PlayFormMiscField", () => {
   const mockOnChange = vi.fn();

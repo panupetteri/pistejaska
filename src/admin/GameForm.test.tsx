@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import GameForm from "./GameForm";
 import { GameDefinition } from "../domain/game";
 import saveGame from "../utils/saveGame";
+import { createMockGameDefinition } from "../test-utils/factories";
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -44,18 +45,14 @@ describe("GameForm", () => {
   });
 
   it("renders with existing game data", () => {
-    const existingGame: GameDefinition = {
+    const existingGame = createMockGameDefinition({
       id: "test-game",
       name: "Test Game",
       icon: "https://example.com/icon.png",
       simultaneousTurns: true,
-      scoreFields: [
-        { id: "points", name: "Points", type: "number" },
-      ],
-      miscFields: [
-        { id: "round", name: "Round", type: "number" },
-      ],
-    };
+      scoreFields: [{ id: "points", name: "Points", type: "number" }],
+      miscFields: [{ id: "round", name: "Round", type: "number" }],
+    });
 
     renderGameForm(existingGame);
 
