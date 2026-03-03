@@ -4,14 +4,12 @@ import { useGames } from "./common/hooks/useGames";
 import { Game, imageField } from "./domain/game";
 import { orderBy, sortBy } from "lodash-es";
 import {
-  getFirestore,
-  deleteDoc,
   doc,
   runTransaction,
 } from "firebase/firestore";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { LoadingSpinner } from "./common/components/LoadingSpinner";
-import { app, db } from "./common/firebase";
+import { db } from "./common/firebase";
 import { usePlay } from "./common/hooks/usePlay";
 import ViewContentLayout from "./common/components/ViewContentLayout";
 import { formatNthNumber, getPositionAsEmoji } from "./common/stringUtils";
@@ -40,6 +38,8 @@ import ButtonImageUpload from "./common/components/buttons/ButtonImageUpload";
 import uploadPlayImage from "./utils/uploadPlayImage";
 import setMiscFieldValue from "./utils/setMiscFieldValue";
 import { playCollection } from "./common/hooks/usePlays";
+
+import { deletePlay } from "./actions/deletePlay";
 
 const hiddenMiscFields = ["images", "name", "date"];
 
@@ -91,8 +91,23 @@ export const PlayView: FC = () => {
   const [user] = useCurrentUser();
   const playId = useParams().playId!;
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [play, loading, error] = usePlay(playId);
+
+  const onCommentsLoaded = () => {
+    if (location.state?.scrollToComments) {
+      const element = document.getElementById("last-comment");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        const header = document.getElementById("comments");
+        if (header) {
+          header.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    }
+  };
 
   const images = useMemo((): ImageGalleryItem[] => {
     if (!play) return [];
@@ -155,8 +170,8 @@ export const PlayView: FC = () => {
       `Do you really want to delete play ${play.getName()}?`,
     );
     if (!reallyDelete) return;
-    const db = getFirestore(app);
-    await deleteDoc(doc(db, "plays-v1", playId));
+    
+    await deletePlay(playId);
 
     navigate("/");
   };
@@ -245,8 +260,9 @@ export const PlayView: FC = () => {
         <ButtonImageUpload onUpload={onImageUpload} />
       </div>
 
+      <div id="comments" className="relative -top-20"></div>
       <Heading2>Comments</Heading2>
-      <CommentList playId={play.id}></CommentList>
+      <CommentList playId={play.id} onLoaded={onCommentsLoaded}></CommentList>
       <CommentAdd playId={play.id} user={user}></CommentAdd>
     </ViewContentLayout>
   );

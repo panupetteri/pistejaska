@@ -4,11 +4,14 @@ export type UserDTO = {
   id: string;
   photoURL?: string | null;
   displayName: string;
-  // TODO PANU: add playerId
+  playerId?: string;
+  playerName?: string;
+  lastSignInTime?: string;
 };
 
 export const toUserDTO = (user: User) => ({
   id: user.uid,
   photoURL: user.photoURL,
   displayName: user.displayName,
+  lastSignInTime: user.metadata.lastSignInTime,
 });

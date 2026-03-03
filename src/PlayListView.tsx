@@ -9,6 +9,7 @@ import { orderBy } from "lodash-es";
 import ImageGalleryStripe from "./common/components/gallery/ImageGalleryStripe";
 import { ImageGalleryItem } from "./common/components/gallery/ImageGallerySwipeView";
 import { useComments } from "./common/hooks/useComments";
+import NotificationsModal from "./NotificationsModal";
 
 export const PlayListView = () => {
   const [plays, loadingPlays, errorPlays] = usePlays();
@@ -42,6 +43,7 @@ export const PlayListView = () => {
 
   return (
     <ViewContentLayout>
+      <NotificationsModal />
       <Heading1>Plays</Heading1>
       <ImageGalleryStripe className="mb-2" images={images} />
       {loadingPlays || loadingGames ? (

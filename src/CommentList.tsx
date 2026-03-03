@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { groupBy, last, map } from "lodash-es";
 import { LoadingSpinner } from "./common/components/LoadingSpinner";
 import CommentItem from "./common/components/comments/CommentItem";
@@ -47,10 +48,16 @@ function groupComments(comments: Comment[]): CommentGroup[] {
   });
 }
 
-export const CommentList = (props: { playId?: string }) => {
+export const CommentList = (props: { playId?: string; onLoaded?: () => void }) => {
   const [user] = useCurrentUser();
-  const { playId } = props;
+  const { playId, onLoaded } = props;
   const [comments, loading, error] = useComments(playId);
+
+  useEffect(() => {
+    if (!loading && onLoaded) {
+      onLoaded();
+    }
+  }, [loading, onLoaded]);
 
   if (error) {
     return (
@@ -92,19 +99,23 @@ export const CommentList = (props: { playId?: string }) => {
                 userDisplayName={userDisplayName}
                 userPhotoURL={userPhotoURL}
               >
-                {comments.map((comment, messageIdx) => (
-                  <CommentItem
-                    date={comment.createdOn}
-                    key={messageIdx}
-                    onDelete={
-                      comment.userId === user?.uid
-                        ? () => onCommentDelete(comment.id)
-                        : null
-                    }
-                  >
-                    {comment.comment}
-                  </CommentItem>
-                ))}
+                  {comments.map((comment, messageIdx) => {
+                    const isLastCommentInAll = groupIdx === groups.length - 1 && idx === group.senderGroups.length - 1 && messageIdx === comments.length - 1;
+                    return (
+                      <CommentItem
+                        date={comment.createdOn}
+                        key={messageIdx}
+                        id={isLastCommentInAll ? "last-comment" : undefined}
+                        onDelete={
+                          comment.userId === user?.uid
+                            ? () => onCommentDelete(comment.id)
+                            : null
+                        }
+                      >
+                        {comment.comment}
+                      </CommentItem>
+                    );
+                  })}
               </CommentSenderGroup>
             ),
           )}

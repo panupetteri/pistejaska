@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Search functionality to play list (front page) & to games
+- Notifications for comments
 
 ## 2026-03-02
 

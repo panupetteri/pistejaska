@@ -5,5 +5,5 @@ import { toUserDTO } from "../domain/user";
 
 export default async function addOrUpdateUser(user: User) {
   const db = getFirestore(app);
-  await setDoc(doc(db, "users-v1", user.uid), toUserDTO(user));
+  await setDoc(doc(db, "users-v1", user.uid), toUserDTO(user), { merge: true });
 }

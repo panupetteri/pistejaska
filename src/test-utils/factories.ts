@@ -81,3 +81,25 @@ export const createMockComment = (
 ): Comment => {
   return new Comment(createMockCommentDTO(commentOverrides), users);
 };
+
+import { Notification, NotificationDTO } from "../domain/notification";
+
+export const createMockNotificationDTO = (
+  overrides: Partial<NotificationDTO> = {},
+): NotificationDTO => ({
+  id: "notif-1",
+  toUserId: "user-target",
+  fromUserId: "user-sender",
+  playId: "play-1",
+  playName: "Test Play",
+  gameId: "game-1",
+  isRead: false,
+  created: "2024-01-15T12:00:00.000Z",
+  ...overrides,
+});
+
+export const createMockNotification = (
+  overrides: Partial<NotificationDTO> = {},
+): Notification => {
+  return new Notification(createMockNotificationDTO(overrides));
+};

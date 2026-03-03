@@ -17,6 +17,8 @@ import ReplayView from "./SelectPlayersFromPlay";
 import { ReportPlayerView } from "./ReportPlayerView";
 import { ReportPlayerList } from "./ReportPlayerList";
 import Admin from "./admin/Admin";
+import { AdminUsersView } from "./admin/AdminUsersView";
+import { AdminOpsView } from "./admin/AdminOpsView";
 import GameAddView from "./admin/GameAddView";
 import GameEditView from "./admin/GameEditView";
 import GameJsonEditorView from "./admin/GameJsonEditorView";
@@ -66,6 +68,8 @@ const App = () => {
       <Route path="/new/:gameId" element={<NewPlayView />} />
       <Route path="/replay/:playId" element={<ReplayView />} />
       <Route path="/new" element={<SelectGame />} />
+      <Route path="/admin_users" element={<AdminUsersView />} />
+      <Route path="/admin_ops" element={<AdminOpsView />} />
       <Route path="/admin">
         <Route index element={<Admin />} />
         <Route path="add-game" element={<GameAddView />} />

@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import DropdownMenu from "./dropdowns/DropdownMenu";
+import DropdownMenu, { DropdownMenuOption } from "./dropdowns/DropdownMenu";
+import { useNotifications } from "../hooks/useNotifications";
 
 const logout = () => {
   signOut(getAuth());
@@ -23,40 +24,64 @@ const menuIconSvg = (
 
 export function NavBar() {
   const navigate = useNavigate();
+  const { notifications } = useNotifications();
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.isRead).length,
+    [notifications],
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const openMenu = useCallback(() => setIsDropdownOpen(true), []);
   const closeMenu = useCallback(() => setIsDropdownOpen(false), []);
-  const menuOptions = useMemo(
-    () => [
+  const menuOptions = useMemo(() => {
+    const options: DropdownMenuOption<string>[] = [
       {
-        value: "players" as const,
+        value: "notifications",
+        label: unreadCount > 0 ? `Notifications (${unreadCount})` : "Notifications",
+        onSelect: () => {
+          navigate("/", { state: { showNotifications: true } });
+        },
+      },
+      {
+        value: "players",
         label: "Players",
         onSelect: () => {
           navigate("/players");
         },
       },
       {
-        value: "changelog" as const,
+        value: "changelog",
         label: "Changelog",
         onSelect: () => {
           navigate("/whatsnew");
         },
       },
       {
-        value: "logout" as const,
+        value: "logout",
         label: "Log out",
         onSelect: () => {
           logout();
         },
       },
-    ],
-    [navigate]
-  );
+    ];
+
+    return options;
+  }, [navigate, unreadCount]);
   return (
     <div>
       <header className="bg-blue-800 h-12 flex flex-row items-center text-white shadow-lg">
         <h1 className="grow px-3 text-left text-xl font-bold cursor-pointer">
-          <Link to="/">Pistejaska</Link>
+          <Link
+            to="/"
+            state={unreadCount > 0 ? { showNotifications: true } : undefined}
+            className={`flex items-center gap-1 ${unreadCount > 0 ? "text-yellow-300" : "text-white"}`}
+          >
+            <span>Pistejaska</span>
+            {unreadCount > 0 && (
+              <span className="text-sm font-medium whitespace-nowrap">
+                ({unreadCount})
+              </span>
+            )}
+          </Link>
         </h1>
         <div className="flex flex-row items-center grow-0 shrink-0">
           <Link className={navBarLinkClassName} to="/">

@@ -12,6 +12,7 @@ interface CommentItemProps {
   date: Temporal.Instant;
   onDelete: (() => void) | null;
   key: string | number;
+  id?: string;
 }
 
 const actionMenuIcon = (
@@ -27,7 +28,7 @@ const actionMenuIcon = (
   </svg>
 );
 
-const CommentItem: FC<CommentItemProps> = ({ children, date, onDelete }) => {
+const CommentItem: FC<CommentItemProps> = ({ children, date, onDelete, id }) => {
   const [dropdownState, setDropdownState] = useState<null | "bubble" | "icon">(
     null
   );
@@ -38,7 +39,7 @@ const CommentItem: FC<CommentItemProps> = ({ children, date, onDelete }) => {
     useLongPress<HTMLDivElement>(openBubbleDropdown);
   const justEmojis = containsJustEmojis(children);
   return (
-    <div className="flex flex-row items-center group">
+    <div id={id} className="flex flex-row items-center group">
       <CommentItemActionMenu
         isOpen={dropdownState === "bubble"}
         onClose={closeDropdown}

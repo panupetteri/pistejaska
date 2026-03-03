@@ -40,6 +40,16 @@ export default function Admin() {
         <Button onClick={() => navigate("/admin/edit-game-json")}>
           Game JSON Editor
         </Button>
+        {user && isAdmin(user) && (
+          <Button onClick={() => navigate("/admin_users")}>
+            Users & Players
+          </Button>
+        )}
+        {user && isAdmin(user) && (
+          <Button onClick={() => navigate("/admin_ops")}>
+            Admin Operations
+          </Button>
+        )}
       </CardButtonRow>
 
       <div className="flex flex-row gap-2 items-center max-w-xl mx-auto mt-3">

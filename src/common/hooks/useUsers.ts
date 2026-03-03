@@ -27,5 +27,18 @@ export const useUsers = (): [UserDTO[], boolean, Error | undefined] => {
 };
 
 export const addOrUpdateUser = async (db: Firestore, user: User) => {
-  await setDoc(doc(db, "users-v1", user.uid), toUserDTO(user));
+  await setDoc(doc(db, "users-v1", user.uid), toUserDTO(user), { merge: true });
+};
+
+export const linkUserToPlayer = async (
+  db: Firestore,
+  userId: string,
+  playerId: string,
+  playerName: string
+) => {
+  await setDoc(
+    doc(db, "users-v1", userId),
+    { playerId, playerName },
+    { merge: true }
+  );
 };
