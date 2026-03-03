@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- Search for play list (front page)
+- Search functionality to play list (front page) & to games
 
 ## 2026-03-02
 

@@ -4,7 +4,7 @@ import { useGames } from "./common/hooks/useGames";
 import ViewContentLayout from "./common/components/ViewContentLayout";
 import TabSet from "./common/components/tabs/TabSet";
 import TabLink from "./common/components/tabs/TabLink";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { usePlays } from "./common/hooks/usePlays";
 import { formatDuration, pluralize } from "./common/stringUtils";
 import { SkeletonLoader } from "./common/components/SkeletonLoader";
@@ -14,6 +14,7 @@ import ListItemIcon from "./common/components/lists/ListItemIcon";
 import ListItemText from "./common/components/lists/ListItemText";
 import ListItemDescription from "./common/components/lists/ListItemDescription";
 import ListLinkItem from "./common/components/lists/ListLinkItem";
+import InputTextField from "./common/components/inputs/InputTextField";
 
 type GameSortCriteriaId =
   | "recentlyPlayed"
@@ -111,16 +112,41 @@ export const ReportGameList = () => {
   };
   const [sortCriteria, setSortCriteria] =
     useState<GameSortCriteriaId>("recentlyPlayed");
+  const [searchTerm, setSearchTerm] = useState("");
+
   const currentSortCriteria = sortCriterias[sortCriteria];
-  const sortedGameItems = orderBy(
-    games,
-    currentSortCriteria.getSortKey,
-    currentSortCriteria.direction,
+  const sortedGameItems = useMemo(
+    () =>
+      orderBy(
+        games,
+        currentSortCriteria.getSortKey,
+        currentSortCriteria.direction,
+      ),
+    [games, currentSortCriteria],
   );
+
+  const filteredGameItems = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return sortedGameItems;
+    }
+    const words = searchTerm.toLowerCase().split(/\s+/).filter(Boolean);
+    return sortedGameItems.filter((game) => {
+      const lowerName = game.name.toLowerCase();
+      return words.every((word) => lowerName.includes(word));
+    });
+  }, [sortedGameItems, searchTerm]);
 
   return (
     <ViewContentLayout>
       <Heading1>Games</Heading1>
+      <div className="px-2 mb-2">
+        <InputTextField
+          label="Search..."
+          value={searchTerm}
+          onChange={setSearchTerm}
+          onClear={() => setSearchTerm("")}
+        />
+      </div>
       <div className="flex flex-col items-center my-2">
         <TabSet>
           {sortTabIds.map((id) => (
@@ -137,26 +163,33 @@ export const ReportGameList = () => {
       {loadingGames ? (
         <SkeletonLoader />
       ) : (
-        <List>
-          {sortedGameItems.map((game) => (
-            <ListLinkItem
-              to={`/games/${game.id}?from=${window.location.pathname}`}
-              key={game.id}
-            >
-              <ListItemIcon>
-                <img
-                  alt={game.name}
-                  src={game.icon}
-                  className="mx-auto object-cover rounded-full h-10 w-10"
-                />
-              </ListItemIcon>
-              <ListItemText title={game.name} />
-              <ListItemDescription>
-                {currentSortCriteria.getDetailLabel(game)}
-              </ListItemDescription>
-            </ListLinkItem>
-          ))}
-        </List>
+        <>
+          <List>
+            {filteredGameItems.map((game) => (
+              <ListLinkItem
+                to={`/games/${game.id}?from=${window.location.pathname}`}
+                key={game.id}
+              >
+                <ListItemIcon>
+                  <img
+                    alt={game.name}
+                    src={game.icon}
+                    className="mx-auto object-cover rounded-full h-10 w-10"
+                  />
+                </ListItemIcon>
+                <ListItemText title={game.name} />
+                <ListItemDescription>
+                  {currentSortCriteria.getDetailLabel(game)}
+                </ListItemDescription>
+              </ListLinkItem>
+            ))}
+          </List>
+          {searchTerm && filteredGameItems.length === 0 && (
+            <div className="p-8 text-center text-slate-500">
+              No games found for "{searchTerm}"
+            </div>
+          )}
+        </>
       )}
     </ViewContentLayout>
   );

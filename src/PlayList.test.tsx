@@ -430,6 +430,7 @@ describe("PlayList Component", () => {
 
       expect(screen.queryByText("Alpha Session")).not.toBeInTheDocument();
       expect(screen.queryByText("Beta Session")).not.toBeInTheDocument();
+      expect(screen.getByText('No plays found for "Zebra"')).toBeInTheDocument();
     });
 
     it("does not match against field values or scores", async () => {
@@ -516,6 +517,25 @@ describe("PlayList Component", () => {
       expect(results).toHaveLength(2);
       expect(results[0]).toHaveAttribute("href", "/view/p1?from=/");
       expect(results[1]).toHaveAttribute("href", "/view/p3?from=/");
+    });
+
+    it("clears search when clear button is clicked", async () => {
+      const user = userEvent.setup();
+      render(
+        <PlayListWrapper>
+          <PlayList plays={mockPlays} games={mockGames} comments={[]} />
+        </PlayListWrapper>,
+      );
+
+      const searchInput = screen.getByLabelText("Search...");
+      await user.type(searchInput, "NonExistentPlay");
+      expect(screen.queryByText("Test Game Session")).not.toBeInTheDocument();
+
+      const clearButton = screen.getByLabelText("Clear");
+      await user.click(clearButton);
+
+      expect(searchInput).toHaveValue("");
+      expect(screen.getByText("Test Game Session")).toBeInTheDocument();
     });
   });
 });

@@ -82,7 +82,12 @@ const PlayList = (props: PlayListProps) => {
   return (
     <>
       <div className="px-2 mb-4">
-        <InputTextField label="Search..." value={search} onChange={setSearch} />
+        <InputTextField
+          label="Search..."
+          value={search}
+          onChange={setSearch}
+          onClear={() => setSearch("")}
+        />
       </div>
       <List>
         {currentData.map((play) => {
@@ -131,6 +136,11 @@ const PlayList = (props: PlayListProps) => {
           );
         })}
       </List>
+      {search && filteredData.length === 0 && (
+        <div className="p-8 text-center text-slate-500">
+          No plays found for "{search}"
+        </div>
+      )}
       {hasMore && (
         <div className="mt-1 flex flex-col items-center">
           <ButtonTextOnly onClick={increaseLimit}>Show more</ButtonTextOnly>

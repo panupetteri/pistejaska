@@ -90,6 +90,7 @@ export const SelectGame: FC = () => {
           value={searchTerm}
           autoFocus
           onChange={setSearchTerm}
+          onClear={() => setSearchTerm("")}
         />
       </div>
 
@@ -109,6 +110,14 @@ export const SelectGame: FC = () => {
             </ListLinkItem>
           ))}
       </List>
+      {searchTerm &&
+        listedGames.filter((g) =>
+          g.lowercaseName.includes(searchTerm.toLowerCase()),
+        ).length === 0 && (
+          <div className="p-8 text-center text-slate-500">
+            No games found for "{searchTerm}"
+          </div>
+        )}
     </ViewContentLayout>
   );
 };
