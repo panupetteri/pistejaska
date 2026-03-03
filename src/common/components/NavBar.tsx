@@ -77,7 +77,7 @@ export function NavBar() {
           >
             <span>Pistejaska</span>
             {unreadCount > 0 && (
-              <span className="text-sm font-medium whitespace-nowrap">
+              <span className="text-[8px] font-medium whitespace-nowrap">
                 ({unreadCount})
               </span>
             )}
