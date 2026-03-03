@@ -47,12 +47,15 @@ describe("NavBar Notifications Visibility", () => {
 
     const logo = screen.getByRole("link", { name: /Pistejaska/i });
     expect(logo).toBeInTheDocument();
-    // Use queryByText on the logo element specifically or check content
     expect(logo.textContent).toBe("Pistejaska");
-    expect(logo).not.toHaveClass("text-yellow-300");
+    
+    expect(screen.queryByRole("link", { name: /Notifications/i })).not.toBeInTheDocument();
+
+    const moreOptions = screen.getByRole("button", { name: /More options/i });
+    expect(moreOptions.textContent).toBe(""); // No badge content
   });
 
-  it("shows count and yellow color when there are unread notifications", () => {
+  it("shows count on avatar when there are unread notifications", () => {
     mockNotifications.data = [
       createMockNotification({ isRead: true }),
       createMockNotification({ isRead: false }),
@@ -66,29 +69,16 @@ describe("NavBar Notifications Visibility", () => {
     );
 
     const logo = screen.getByRole("link", { name: /Pistejaska/i });
-    expect(logo).toBeInTheDocument();
-    expect(logo.textContent).toContain("(2)");
-    expect(logo).toHaveClass("text-yellow-300");
+    expect(logo.textContent).toBe("Pistejaska");
+
+    expect(screen.queryByRole("link", { name: /Notifications/i })).not.toBeInTheDocument();
+
+    const moreOptions = screen.getByRole("button", { name: /More options/i });
+    expect(moreOptions).toBeInTheDocument();
+    expect(moreOptions.textContent).toBe("2"); // Badge count on avatar
   });
 
-  it("only passes showNotifications state in logo link when unread notifications exist", () => {
-    // Case 1: Unread exist
-    mockNotifications.data = [createMockNotification({ isRead: false })];
-    render(<MemoryRouter><NavBar /></MemoryRouter>);
-    
-    const logoWithUnread = screen.getByRole("link", { name: /Pistejaska/i });
-    expect(logoWithUnread.textContent).toContain("(1)");
-
-    cleanup();
-
-    // Case 2: No unread (only read)
-    mockNotifications.data = [createMockNotification({ isRead: true })];
-    render(<MemoryRouter><NavBar /></MemoryRouter>);
-    const logoNoUnread = screen.getByRole("link", { name: /Pistejaska/i });
-    expect(logoNoUnread.textContent).toBe("Pistejaska");
-  });
-
-  it("always shows Notifications in the avatar menu", () => {
+  it("always shows Notifications with bell emoji in the avatar menu", () => {
     // Case 1: No notifications
     mockNotifications.data = [];
     render(
@@ -96,7 +86,7 @@ describe("NavBar Notifications Visibility", () => {
         <NavBar />
       </MemoryRouter>
     );
-    expect(screen.getByText("Notifications")).toBeInTheDocument();
+    expect(screen.getByText("🔔 Notifications")).toBeInTheDocument();
 
     cleanup();
 
@@ -107,6 +97,6 @@ describe("NavBar Notifications Visibility", () => {
         <NavBar />
       </MemoryRouter>
     );
-    expect(screen.getByText("Notifications (1)")).toBeInTheDocument();
+    expect(screen.getByText("🔔 Notifications (1)")).toBeInTheDocument();
   });
 });

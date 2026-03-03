@@ -9,7 +9,7 @@ const logout = () => {
 };
 
 const navBarLinkClassName =
-  "block py-2 px-3 rounded-sm text-sm font-medium uppercase hover:bg-black/10";
+  "block py-2 px-2 rounded-sm text-sm font-medium uppercase hover:bg-black/10";
 
 const menuIconSvg = (
   <svg
@@ -36,7 +36,7 @@ export function NavBar() {
     const options: DropdownMenuOption<string>[] = [
       {
         value: "notifications",
-        label: unreadCount > 0 ? `Notifications (${unreadCount})` : "Notifications",
+        label: unreadCount > 0 ? `🔔 Notifications (${unreadCount})` : "🔔 Notifications",
         onSelect: () => {
           navigate("/", { state: { showNotifications: true } });
         },
@@ -66,24 +66,16 @@ export function NavBar() {
 
     return options;
   }, [navigate, unreadCount]);
+
   return (
     <div>
       <header className="bg-blue-800 h-12 flex flex-row items-center text-white shadow-lg">
         <h1 className="grow px-3 text-left text-xl font-bold cursor-pointer">
-          <Link
-            to="/"
-            state={unreadCount > 0 ? { showNotifications: true } : undefined}
-            className={`flex items-center gap-1 ${unreadCount > 0 ? "text-yellow-300" : "text-white"}`}
-          >
-            <span>Pistejaska</span>
-            {unreadCount > 0 && (
-              <span className="text-[8px] font-medium whitespace-nowrap">
-                ({unreadCount})
-              </span>
-            )}
+          <Link to="/" className="text-white">
+            Pistejaska
           </Link>
         </h1>
-        <div className="flex flex-row items-center grow-0 shrink-0">
+        <div className="flex flex-row items-center grow-0 shrink-0 pr-1">
           <Link className={navBarLinkClassName} to="/">
             Plays
           </Link>
@@ -100,12 +92,17 @@ export function NavBar() {
             onSelect={closeMenu}
           >
             <button
-              className={navBarLinkClassName}
+              className={`${navBarLinkClassName} relative !px-1.5`}
               aria-label="More options"
               aria-haspopup
               onClick={openMenu}
             >
               {menuIconSvg}
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-0 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-yellow-400 text-[9px] font-bold text-blue-900 shadow-sm">
+                  {unreadCount}
+                </span>
+              )}
             </button>
           </DropdownMenu>
         </div>
