@@ -248,28 +248,28 @@ const SelectPlayers = (props: {
             <></>
           )}
 
-          <ListItem key="currentplayer">
-          <ListItemIcon>
-            <IconPlus />
-          </ListItemIcon>
-          <InputTextField
-            className="mb-2"
-            label="New player"
-            value={currentPlayerName}
-            onChange={setCurrentPlayerName}
-          />
-          <Button className="ml-4" onClick={onAddPlayer}>
-            Add
-          </Button>
-          </ListItem>
-          </List>
           {searchTerm && visiblePlayers.length === 0 && (
             <div className="p-8 text-center text-slate-500">
               No players found for "{searchTerm}"
             </div>
           )}
 
-          </div>
+          <ListItem key="currentplayer">
+            <ListItemIcon>
+              <IconPlus />
+            </ListItemIcon>
+            <InputTextField
+              className="mb-2"
+              label="New player"
+              value={currentPlayerName}
+              onChange={setCurrentPlayerName}
+            />
+            <Button className="ml-4" onClick={onAddPlayer}>
+              Add
+            </Button>
+          </ListItem>
+        </List>
+      </div>
       <List className="mt-8">
         {players.map((player) => (
           <ListItem key={player.id}>
