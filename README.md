@@ -6,6 +6,8 @@ Using the app requires Google login with whitelisted email. Emails are whitelist
 
 ## Contributing
 
+- Ensure all tests pass (`npm test`)
+- Ensure code coverage is maintained (`npm run test:coverage`)
 - Manually test that Pistejaska still works
 - Update changelog
 - Make PR to https://bitbucket.org/panula/pistejaska-react/
@@ -46,6 +48,17 @@ Alternatively, you can run `npx prettier src/* --write` to format all files in p
 
 1. `npm install`
 1. `npm start`
+
+## Testing
+
+Run all tests:
+`npm test`
+
+Run tests in watch mode:
+`npx vitest`
+
+Generate code coverage report:
+`npm run test:coverage`
 
 ## Building
 
