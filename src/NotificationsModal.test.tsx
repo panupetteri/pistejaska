@@ -126,12 +126,13 @@ describe("NotificationsModal", () => {
   });
 
   describe("Actions", () => {
-    it("navigates to play view when notification row is clicked", () => {
+    it("marks as read and navigates to play view when notification row is clicked", () => {
       render(<MemoryRouter><NotificationsModal /></MemoryRouter>);
 
       const rows = screen.getAllByRole("listitem");
       fireEvent.click(rows[0]);
 
+      expect(mockDismissNotification).toHaveBeenCalledWith("n1");
       expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining("/view/"), {
         state: { scrollToComments: true }
       });

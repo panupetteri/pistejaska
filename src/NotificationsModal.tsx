@@ -104,6 +104,7 @@ const NotificationsModal: FC = () => {
                   key={n.id} 
                   className={`group cursor-pointer hover:bg-slate-50 transition-colors rounded-xl p-3 items-start mb-1 ${n.isRead ? 'opacity-50 grayscale-[0.5]' : ''}`}
                   onClick={() => {
+                    if (!n.isRead) dismissNotification(n.id);
                     navigate(`/view/${n.playId}`, { state: { scrollToComments: true } });
                   }}
                 >
