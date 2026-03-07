@@ -8,7 +8,7 @@ With this web app you can easily track board game scores. Key features:
 - report features: see average play duration per game, statistical analysis for best game characters etc.
 - optimized for mobile phones, easy & fast to input scores
 
-![Pistejaska App Screenshot](./docs/images/screenshot.jpg)
+![Pistejaska App Screenshot](./docs/images/screenshot.png)
 
 **Note:** Using the app requires a Google login with a whitelisted email. Ask the project administrator (panu.vuorinen@gmail.com) for permissions.
 
@@ -53,7 +53,9 @@ Please use ESLint and Prettier for code formatting & linting. The easiest way to
 ## Operations
 
 ### Hosting & Building
-To build for production: `npm run build`
+
+To build for production: `npm run build`.
+
 The `master` branch is automatically built & hosted in Netlify: https://www.pistejaska.net 
 
 ### Backups
@@ -73,6 +75,7 @@ The `master` branch is automatically built & hosted in Netlify: https://www.pist
 
 1. Get backup name from https://console.cloud.google.com/storage/browser/pistejaska-dev-firestore-backups?project=pistejaska-dev
 1. `gcloud beta firestore import --database="backup" gs://pistejaska-dev-firestore-backups/{name}`
+
 ### Migrations
 
 If you need to perform data migrations, do this:
