@@ -105,9 +105,6 @@ If you need to perform data migrations, do this:
 
 - Allow users to change their display name in comments and in plays
 - Denormalize players from plays to their own root entity & link player to user
-- Add pagination to list views
-- Add notifications
-- Consider optimizing build with esbuild (replace create-react-app or part of it?)
 - change "misc score field" for unknown expansion scores to be the last field of the PlayForm
 - statistical analysis for strongest victory predictor (eg. start order (is starting player more likely to win), number of dwarfs in caverna, player, race used)
 - generic reports: games by plays, longest/shortest games, best ELO rating for all games etc
