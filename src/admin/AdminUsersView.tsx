@@ -23,6 +23,7 @@ import { Player } from "../domain/play";
 import { db } from "../common/firebase";
 import useCurrentUser from "../common/hooks/useCurrentUser";
 import { isAdmin } from "../auth/auth";
+import { combinePlayers } from "../actions/combinePlayers";
 
 interface LinkPlayerModalProps {
   user: UserDTO;
@@ -86,12 +87,125 @@ const LinkPlayerModal = ({
   );
 };
 
+interface CombinePlayersModalProps {
+  player: Player;
+  allPlayers: Record<string, Player[]>;
+  onClose: () => void;
+  onConfirm: (keepPlayerId: string, deletePlayerId: string, playerName: string, dryRun: boolean) => void;
+}
+
+const CombinePlayersModal = ({
+  player,
+  allPlayers,
+  onClose,
+  onConfirm,
+}: CombinePlayersModalProps) => {
+  const [targetPlayerId, setTargetPlayerId] = useState<string>("");
+  const [keepPlayerId, setKeepPlayerId] = useState<string>(player.id);
+  
+  const sortedPlayerIds = orderBy(
+    Object.keys(allPlayers).filter(id => id !== player.id),
+    (id) => allPlayers[id][0].name
+  );
+
+  const targetPlayer = targetPlayerId ? allPlayers[targetPlayerId][0] : null;
+
+  const handleConfirm = (dryRun: boolean) => {
+    if (targetPlayerId && keepPlayerId) {
+      const deleteId = keepPlayerId === player.id ? targetPlayerId : player.id;
+      const keepName = allPlayers[keepPlayerId][0].name;
+      onConfirm(keepPlayerId, deleteId, keepName, dryRun);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
+        <div className="p-6 border-b border-slate-100">
+          <Heading2 className="!mb-0">Combine "{player.name}"</Heading2>
+        </div>
+
+        <div className="overflow-y-auto flex-1 p-4">
+          <p className="mb-4 text-slate-600">Select another player to combine with:</p>
+          <select
+            className="w-full p-2 border border-slate-300 rounded-lg mb-6"
+            value={targetPlayerId}
+            onChange={(e) => {
+              setTargetPlayerId(e.target.value);
+              if (!keepPlayerId) setKeepPlayerId(player.id);
+            }}
+          >
+            <option value="">Select a player...</option>
+            {sortedPlayerIds.map((id) => (
+              <option key={id} value={id}>
+                {allPlayers[id][0].name} ({allPlayers[id].length} plays)
+              </option>
+            ))}
+          </select>
+
+          {targetPlayer && (
+            <div className="space-y-4">
+              <p className="font-semibold text-slate-700">Which identity to keep?</p>
+              <div className="space-y-2">
+                <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                  <input 
+                    type="radio" 
+                    name="keep" 
+                    value={player.id} 
+                    checked={keepPlayerId === player.id}
+                    onChange={() => setKeepPlayerId(player.id)}
+                  />
+                  <div>
+                    <div className="font-bold">{player.name}</div>
+                    <div className="text-xs text-slate-500">ID: {player.id}</div>
+                  </div>
+                </label>
+                <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                  <input 
+                    type="radio" 
+                    name="keep" 
+                    value={targetPlayer.id} 
+                    checked={keepPlayerId === targetPlayer.id}
+                    onChange={() => setKeepPlayerId(targetPlayer.id)}
+                  />
+                  <div>
+                    <div className="font-bold">{targetPlayer.name}</div>
+                    <div className="text-xs text-slate-500">ID: {targetPlayer.id}</div>
+                  </div>
+                </label>
+              </div>
+
+              <p className="text-xs text-red-500 italic">
+                This will modify all plays of the deleted player.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="p-4 bg-slate-50 border-t border-slate-100">
+          <CardButtonRow>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={() => handleConfirm(true)} disabled={!targetPlayerId}>
+              Dry Run
+            </Button>
+            <ButtonPrimary onClick={() => handleConfirm(false)} disabled={!targetPlayerId}>
+              Run
+            </ButtonPrimary>
+          </CardButtonRow>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const AdminUsersView = () => {
   const [user, loadingUser] = useCurrentUser();
   const navigate = useNavigate();
   const [plays, loadingPlays, errorPlays] = usePlays();
   const [users, loadingUsers, errorUsers] = useUsers();
   const [linkingUser, setLinkingUser] = useState<UserDTO | null>(null);
+  const [combiningPlayer, setCombiningPlayer] = useState<Player | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (!loadingUser && (!user || !isAdmin(user))) {
@@ -99,7 +213,7 @@ export const AdminUsersView = () => {
     }
   }, [user, loadingUser, navigate]);
 
-  if (loadingPlays || loadingUsers || loadingUser) {
+  if (loadingPlays || loadingUsers || loadingUser || isProcessing) {
     return <LoadingSpinner />;
   }
 
@@ -125,6 +239,29 @@ export const AdminUsersView = () => {
       } catch (err) {
         console.error("Failed to link user", err);
         alert("Failed to link user");
+      }
+    }
+  };
+
+  const handleCombineConfirm = async (keepPlayerId: string, deletePlayerId: string, playerName: string, dryRun: boolean) => {
+    const confirmationMsg = dryRun 
+      ? `Are you sure you want to run a dry run? Changes will only be logged to console.`
+      : `Are you sure you want to combine these players? This action cannot be undone.`;
+
+    if (confirm(confirmationMsg)) {
+      if (!dryRun) setIsProcessing(true);
+      try {
+        await combinePlayers(db, keepPlayerId, deletePlayerId, playerName, dryRun);
+        if (!dryRun) {
+          setCombiningPlayer(null);
+          window.location.reload();
+        } else {
+          alert("Dry run complete. Check console for details.");
+        }
+      } catch (err) {
+        console.error("Failed to combine players", err);
+        alert("Failed to combine players");
+        setIsProcessing(false);
       }
     }
   };
@@ -177,11 +314,16 @@ export const AdminUsersView = () => {
           const player = playersFromPlays[playerId][0];
           const playCount = playersFromPlays[playerId].length;
           return (
-            <ListItem key={player.id} className="flex flex-col items-start!">
-              <ListItemText title={player.name} />
-              <ListItemDescription>
-                ID: {player.id} | {pluralize(playCount, "play", "plays")}
-              </ListItemDescription>
+            <ListItem key={player.id} className="flex flex-row justify-between items-center!">
+              <div className="flex flex-col items-start">
+                <ListItemText title={player.name} />
+                <ListItemDescription>
+                  ID: {player.id} | {pluralize(playCount, "play", "plays")}
+                </ListItemDescription>
+              </div>
+              <ButtonLight onClick={() => setCombiningPlayer(player)}>
+                Combine
+              </ButtonLight>
             </ListItem>
           );
         })}
@@ -195,6 +337,16 @@ export const AdminUsersView = () => {
           onConfirm={handleLinkConfirm}
         />
       )}
+
+      {combiningPlayer && (
+        <CombinePlayersModal
+          player={combiningPlayer}
+          allPlayers={playersFromPlays}
+          onClose={() => setCombiningPlayer(null)}
+          onConfirm={handleCombineConfirm}
+        />
+      )}
     </ViewContentLayout>
   );
 };
+
