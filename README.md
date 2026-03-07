@@ -1,94 +1,79 @@
-# pistejaska
+# Pistejaska
 
-With this web app you can easily track board game scores. The app provides support for adding different board game templates.
+[![Build status](https://api.netlify.com/api/v1/badges/6f3bb67e-b89f-4c3f-95ca-d8ba5d9811f8/deploy-status)](https://app.netlify.com/projects/pistejaska/deploys)
 
-Using the app requires Google login with whitelisted email. Emails are whitelisted on https://console.firebase.google.com/project/pistejaska-dev/database/firestore/rules. Ask panu.vuorinen@gmail.com for permissions.
+With this web app you can easily track board game scores. Key features:
+- track scores with customizable and extensible board game templates
+- social features: add photos and comments
+- report features: see average play duration per game, statistical analysis for best game characters etc.
+- optimized for mobile phones, easy & fast to input scores
 
-## Contributing
+![Pistejaska App Screenshot](./docs/images/screenshot.jpg)
 
-- Ensure all tests pass (`npm test`)
-- Ensure code coverage is maintained (`npm run test:coverage`)
-- Manually test that Pistejaska still works
-- Update changelog
-- Make PR to https://bitbucket.org/panula/pistejaska-react/
+**Note:** Using the app requires a Google login with a whitelisted email. Ask the project administrator (panu.vuorinen@gmail.com) for permissions.
 
-## Requirements
+## Quick Start
 
-1. node.js (20 or newer)
+### Requirements
+- Node.js (20 or newer)
+
+### Installation & Running
+1. `git clone https://github.com/panupetteri/pistejaska`
+2. `npm install`
+3. `npm start`
+
+### Testing
+- Run all tests: `npm test`
+- Run tests in watch mode: `npm run test:watch`
+- Generate code coverage report: `npm run test:coverage`
 
 ## Technologies and why we use them
+- **React**: Front-end library for productivity due to good composability and large ecosystem.
+- **Tailwind CSS**: Utility library for productivity and easy visuals (designed by developers, not designers).
+- **TypeScript**: For productivity due to great tooling and static typing.
+- **lodash**: Base library, as JavaScript's native utilities can be lacking.
+- **Firebase Authentication & Firestore**: Backend for productivity, real-time database, and free hosting.
+- **Netlify**: Hosting platform due to free tier and easy-to-setup continuous delivery.
+- **Vite & vitest**: For building and testing. They are extremely fast and provide watch modes, greatly improving developer productivity.
 
-- `React` as a front-end library for productivity due to good composability and large ecosystem
-- `Tailwind CSS` as a CSS utility library for productivity and easy visuals as the app is designed by developers, not designers
-- `Typescript` as a language for productivity due to great tooling (like auto-complete due to static types)
-- `lodash` as a base library, as JavaScript's base library is lacking and of poor quality
-- `Firebase authentication & Firestore` as a backend for productivity, real-time database and (practically) free hosting. Admin is panu.vuorinen@gmail.com.
-- `Netlify` as a hosting platform due to free price and easy-to-setup continuous delivery
+## Development Guidelines
 
-## Developing
+Please use ESLint and Prettier for code formatting & linting. The easiest way to achieve this is:
+1. Use VS Code.
+2. Install the ESLint and Prettier extensions.
+3. Configure `"editor.formatOnSave": true` in your settings.
+4. Set "Prettier" as the default formatter.
 
-Please use eslint and prettier for code formatting & linting.
+*Alternatively, run `npx prettier src/* --write` before committing.*
 
-Easiest way to achieve this is to
-
-- Use VS Code
-- Install [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) extension
-- Install [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extension
-- Configure `"editor.formatOnSave": true` setting.
-- Set "Prettier" as the default formatter
-
-Alternatively, you can run `npx prettier src/* --write` to format all files in project root before committing.
-
-### Tips
-
+**Tips:**
 - Analyze bundle size: `npm run build && npm run analyze`
-- Install [Tailwind CSS Intellisense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) extension
+- Install the Tailwind CSS Intellisense extension for VS Code.
 
-## Developing
+## Operations
 
-1. `npm install`
-1. `npm start`
+### Hosting & Building
+To build for production: `npm run build`
+The `master` branch is automatically built & hosted in Netlify: https://www.pistejaska.net 
 
-## Testing
-
-Run all tests:
-`npm test`
-
-Run tests in watch mode:
-`npx vitest`
-
-Generate code coverage report:
-`npm run test:coverage`
-
-## Building
-
-1. `npm run build`
-
-## Hosting
-
-Master branch of this project is automatically built & hosted in Netlify (https://www.pistejaska.net, also responds from https://pistejaska.panu.dev)
-
-## Backups
-
-### Setup
+### Backups
 
 1. Install gcloud (https://cloud.google.com/sdk/docs/install)
 1. `gcloud auth login`
 1. `gcloud config set project pistejaska-dev`
 
-### Backup export
+#### Backup export
 
 1. `gsutil -m cp -R gs://pistejaska-dev.appspot.com . # copy photos`
 1. `gcloud firestore export gs://pistejaska-dev-firestore-backups # export firestore`
 1. `gsutil -m cp -R gs://pistejaska-dev-firestore-backups . # copy firestore backup`
 1. Copy Firestore rules manually from https://console.firebase.google.com/u/0/project/pistejaska-dev/firestore/rules
 
-### Backup import
+#### Backup import
 
 1. Get backup name from https://console.cloud.google.com/storage/browser/pistejaska-dev-firestore-backups?project=pistejaska-dev
 1. `gcloud beta firestore import --database="backup" gs://pistejaska-dev-firestore-backups/{name}`
-
-## Migrations
+### Migrations
 
 If you need to perform data migrations, do this:
 
@@ -100,6 +85,13 @@ If you need to perform data migrations, do this:
    See existing scripts for examples.
 1. Test migration: `node V0x_MyGreatMigration.js`
 1. Run migration: `node V0x_MyGreatMigration.js --prod`
+
+## Contributing
+1. Ensure all tests pass (`npm test`).
+2. Ensure code coverage is maintained (`npm run test:coverage`).
+3. Manually test that Pistejaska still works.
+4. Update the changelog.
+5. Submit a PR to: https://github.com/panupetteri/pistejaska
 
 ## TODO
 
